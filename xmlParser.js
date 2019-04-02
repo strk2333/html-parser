@@ -1,8 +1,17 @@
 module.exports = class {
     constructor() {}
 
-    _parseFromString(xmlText) {
-        var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(/>/g, '>\n');
+    /**
+     * main function
+     * @param {*} xmlText 
+     * @param {*} frontRegex 
+     * usage: ignore specific tags like <br>
+     * type: string 
+     * example: '(?<!br|br\\s|br\/|br\\s\/)'
+     */
+    _parseFromString(xmlText, frontRegex ='') {
+        const matchEndOfStartTag = RegExp(`${frontRegex}>`, 'g')
+        var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(matchEndOfStartTag, '>\n');
         var rawXmlData = [];
 
         cleanXmlText.split('\n').map(element => {
