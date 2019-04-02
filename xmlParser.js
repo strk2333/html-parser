@@ -9,7 +9,7 @@ module.exports = class {
      * type: string 
      * example: '(?<!br|br\\s|br\/|br\\s\/)'
      */
-    _parseFromString(xmlText, frontRegex ='') {
+    _parseFromString(xmlText, frontRegex) {
         const matchEndOfStartTag = RegExp(`${frontRegex}>`, 'g')
         var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(matchEndOfStartTag, '>\n');
         var rawXmlData = [];
@@ -159,8 +159,8 @@ module.exports = class {
         return tagText;
     }
 
-    parseFromString(xmlText) {
-        return this._parseFromString(xmlText);
+    parseFromString(xmlText, frontRegex='') {
+        return this._parseFromString(xmlText, frontRegex);
     }
 
     toString(xml) {
