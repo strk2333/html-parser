@@ -4,14 +4,16 @@ module.exports = class {
     /**
      * main function
      * @param {*} xmlText 
-     * @param {*} frontRegex 
-     * usage: ignore specific tags like <br>
+     * @param {*} frontIgnore
+     * usage: ignore specific tags like <br />
      * type: string 
-     * example: '(?<!br|br\\s|br\/|br\\s\/)'
+     * example: '(<br \/>|<br\/>|<br>|<br >)'
      */
-    _parseFromString(xmlText, frontRegex) {
-        const matchEndOfStartTag = RegExp(`${frontRegex}>`, 'g')
-        var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(matchEndOfStartTag, '>\n');
+    _parseFromString(xmlText, frontIgnore) {
+        var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(/>/g, '>\n');
+        var frontIgnoreRegex = RegExp(`${frontIgnore}\\n`, 'g')
+        console.log(frontIgnoreRegex)
+        cleanXmlText = cleanXmlText.replace(frontIgnoreRegex, `$1`)
         var rawXmlData = [];
 
         cleanXmlText.split('\n').map(element => {
@@ -159,8 +161,8 @@ module.exports = class {
         return tagText;
     }
 
-    parseFromString(xmlText, frontRegex='') {
-        return this._parseFromString(xmlText, frontRegex);
+    parseFromString(xmlText, frontIgnore='') {
+        return this._parseFromString(xmlText, frontIgnore);
     }
 
     toString(xml) {
