@@ -13,7 +13,6 @@ module.exports = class {
         var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(/>/g, '>\n');
         if (frontIgnore !== '') {
             var frontIgnoreRegex = RegExp(`${frontIgnore}\\n`, 'g')
-            console.log(frontIgnoreRegex)
             cleanXmlText = cleanXmlText.replace(frontIgnoreRegex, `$1`)
         }
 
