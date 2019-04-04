@@ -11,9 +11,12 @@ module.exports = class {
      */
     _parseFromString(xmlText, frontIgnore) {
         var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ').replace(/\\t\\n\\r/g, '').replace(/>/g, '>\n');
-        var frontIgnoreRegex = RegExp(`${frontIgnore}\\n`, 'g')
-        console.log(frontIgnoreRegex)
-        cleanXmlText = cleanXmlText.replace(frontIgnoreRegex, `$1`)
+        if (frontIgnore !== '') {
+            var frontIgnoreRegex = RegExp(`${frontIgnore}\\n`, 'g')
+            console.log(frontIgnoreRegex)
+            cleanXmlText = cleanXmlText.replace(frontIgnoreRegex, `$1`)
+        }
+
         var rawXmlData = [];
 
         cleanXmlText.split('\n').map(element => {
