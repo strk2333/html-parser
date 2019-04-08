@@ -1,14 +1,10 @@
-// import XMLParser from './xml-parser/xmlParser'
-
 const XMLParser = require('../xmlParser')
 const indexRes = require('./indexSrc')
 const customRes = require('./customSrc')
-// const testRes = `<div class='root'><div class='content'>1<div>0</div></div><div class='content'>2</div></div>`
 
 
 const parser = new XMLParser()
-// const xml = parser.parseFromString(testRes, '(<br \/>|<br\/>|<br>|<br >)')
-const xml = parser.parseFromString(customRes, '(<br \/>|<br\/>|<br>|<br >)')
+const xml = parser.parseFromString(customRes,)
 const arr = xml.getElementsByTagName('td')
 const arr2 = arr.filter((it) => {
     return it.attributes && it.attributes.class && it.attributes.class.indexOf('content') !== -1
