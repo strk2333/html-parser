@@ -1,9 +1,12 @@
-# Problems
-1. x can't show closed tag value, ex. `<a>1<a>2</a>3</a>` can't show 3
-2. o show br tag use uuid replace br
-
+# react-html-parser
 ---
+# Problems
+1. O can't show closed tag value, ex. `<p><div>1<p>2</p>3</div>4<p>` can't show 3,4: add virtual tag
+2. O show br tag: use uuid replace br
+
+
 # Origin
+---
 # react-xml-parser
 
 A simple and user-friendly XML parser for React-native developers.

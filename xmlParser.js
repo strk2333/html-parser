@@ -1,16 +1,19 @@
 const debugMode = false
 
 const uuid = require('uuid/v1')
-const brid = uuid()
 
 module.exports = class {
 
-    constructor() {}
+    constructor() {
+        this.brid = uuid(); // br tag repalced as brid
+        this.vtn = uuid(); // virtual tag name
+    }
 
     _parseFromString(xmlText) {
-        var cleanXmlText = xmlText.replace(/\s{2,}/g, ' ')
-        .replace(/\\t\\n\\r/g, '')
-        .replace(/(<br \/>|<br\/>|<br>|<br >)/g, brid)
+        var cleanXmlText = xmlText
+        .replace(/\s{2,}/g, ' ')
+        .replace(/\t|\n|\r/g, '')
+        .replace(/<br \/>|<br\/>|<br>|<br >/g, this.brid)
         .replace(/>/g, '>\n')
         .replace(/</g, '\n<')
 
@@ -59,7 +62,7 @@ module.exports = class {
         return matches;
     }
 
-    _parseTag(tagText, parent) {
+    _parseTag(tagText) {
         // split tag
         // div, class='root'
         var cleanTagText = tagText.match(/([^\s]*)=('([^']*?)'|"([^"]*?)")|([\/?\w\-\:]+)/g);
@@ -103,7 +106,7 @@ module.exports = class {
         return tagValue.substring(tagValue.lastIndexOf('[') + 1, tagValue.indexOf(']'));
     }
 
-    _convertTagsArrayToTree(xml) {
+    _convertTagsArrayToTree(xml, parent) {
         var xmlTree = [];
 
         if (xml.length == 0) {
@@ -111,7 +114,7 @@ module.exports = class {
         }
 
         var tag = xml.shift();
-        tag.value = tag.value.replace(RegExp(brid, 'g'), '<br />')
+        tag.value = tag.value.replace(RegExp(this.brid, 'g'), '<br />')
 
         if ((tag.value.indexOf('</') > -1 || tag.name.match(/\/$/))) {
             tag.name = tag.name.replace(/\/$/, '').trim();
@@ -123,15 +126,22 @@ module.exports = class {
         }
 
         if (tag.name.indexOf('/') == 0) {
-            // if (tag.value !== '') {
-            //     xmlTree.push(tag);
-            //     xmlTree = xmlTree.concat(this._convertTagsArrayToTree(xml))
-            // }
+            if (tag.value !== '') {
+                const virtualTag = this._parseTag(`<${this.vtn}>`);
+                virtualTag.value = tag.value;
+                xml.unshift(virtualTag);
+                xml.unshift(this._parseTag(`</${this.vtn}>`));
+
+                if ((!parent || parent.indexOf(this.vtn) === -1)) {
+                    xmlTree = this._convertTagsArrayToTree(xml);
+                }
+            }
             return xmlTree;
         }
 
         xmlTree.push(tag);
-        tag.children = this._convertTagsArrayToTree(xml);
+        if (tag.name.indexOf(this.vtn) === -1)
+            tag.children = this._convertTagsArrayToTree(xml, tag.name);
         xmlTree = xmlTree.concat(this._convertTagsArrayToTree(xml));
 
         return xmlTree;
@@ -152,6 +162,9 @@ module.exports = class {
     }
 
     _convertTagToText(tag) {
+        if (tag.name.indexOf(this.vtn) > -1)
+            return tag.value;
+
         var tagText = '<' + tag.name;
 
         for (var attribute in tag.attributes) {
@@ -165,10 +178,6 @@ module.exports = class {
         } else {
             tagText += '>';
         }
-
-        // if (tag.children && tag.children.length === 0) {
-        //     tagText += '</' + tag.name + '>';
-        // }
 
         return tagText;
     }

@@ -4,8 +4,8 @@ const customRes = require('./customSrc')
 
 
 const parser = new XMLParser()
-const xml = parser.parseFromString(customRes,)
-const arr = xml.getElementsByTagName('td')
+const xml = parser.parseFromString(customRes)
+const arr = xml.getElementsByTagName('div')
 const arr2 = arr.filter((it) => {
     return it.attributes && it.attributes.class && it.attributes.class.indexOf('content') !== -1
 })
@@ -13,7 +13,7 @@ const arr2 = arr.filter((it) => {
 console.log(parser.toString(xml))
 // console.log(arr)
 // console.log(arr2)
-console.log(arr[0])
+// console.log(arr[0])
 
 // for (i of arr) {
 //     console.log(i)
