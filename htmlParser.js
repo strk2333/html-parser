@@ -7,17 +7,17 @@ module.exports = class {
         this.vtn = uuid(); // virtual tag name
     }
 
-    _parseFromString(xmlText) {
-        var cleanXmlText = xmlText
+    _parseFromString(htmlText) {
+        var cleanhtmlText = htmlText
         .replace(/\s{2,}/g, ' ')
         .replace(/\t|\n|\r/g, '')
         .replace(/<br \/>|<br\/>|<br>|<br >/g, this.brid)
         .replace(/>/g, '>\n')
         .replace(/</g, '\n<')
 
-        var rawXmlData = [];
+        var rawhtmlData = [];
 
-        cleanXmlText.split('\n').map(element => {
+        cleanhtmlText.split('\n').map(element => {
             element = element.trim();
 
             if (element === '') {
@@ -26,22 +26,22 @@ module.exports = class {
             
             // console.log(`element: ${element}`)
             
-            if (!element || element.indexOf('?xml') > -1) {
+            if (!element || element.indexOf('?html') > -1) {
                 return;
             }
             
             if (element.indexOf('<') == 0 && element.indexOf('CDATA') < 0) {
                 var parsedTag = this._parseTag(element);
-                rawXmlData.push(parsedTag);
+                rawhtmlData.push(parsedTag);
                 // \> \ >
                 if (element.match(/\/\s*>$/)) {
-                    rawXmlData.push(this._parseTag('</' + parsedTag.name + '>'));
+                    rawhtmlData.push(this._parseTag('</' + parsedTag.name + '>'));
                 }
             } else {
-                rawXmlData[rawXmlData.length - 1].value = this._parseValue(element);
+                rawhtmlData[rawhtmlData.length - 1].value = this._parseValue(element);
             }
         });
-        return this._convertTagsArrayToTree(rawXmlData)[0];
+        return this._convertTagsArrayToTree(rawhtmlData)[0];
     }
 
     _getElementsByTagName(tagName) {
@@ -102,59 +102,59 @@ module.exports = class {
         return tagValue.substring(tagValue.lastIndexOf('[') + 1, tagValue.indexOf(']'));
     }
 
-    _convertTagsArrayToTree(xml, parent) {
-        var xmlTree = [];
+    _convertTagsArrayToTree(html, parent) {
+        var htmlTree = [];
 
-        if (xml.length == 0) {
-            return xmlTree;
+        if (html.length == 0) {
+            return htmlTree;
         }
 
-        var tag = xml.shift();
+        var tag = html.shift();
         tag.value = tag.value.replace(RegExp(this.brid, 'g'), '<br />')
 
         if ((tag.value.indexOf('</') > -1 || tag.name.match(/\/$/))) {
             tag.name = tag.name.replace(/\/$/, '').trim();
             tag.value = tag.value.substring(0, tag.value.indexOf('</'));
-            xmlTree.push(tag);
-            xmlTree = xmlTree.concat(this._convertTagsArrayToTree(xml));
+            htmlTree.push(tag);
+            htmlTree = htmlTree.concat(this._convertTagsArrayToTree(html));
 
-            return xmlTree;
+            return htmlTree;
         }
 
         if (tag.name.indexOf('/') == 0) {
             if (tag.value !== '') {
                 const virtualTag = this._parseTag(`<${this.vtn}>`);
                 virtualTag.value = tag.value;
-                xml.unshift(virtualTag);
-                xml.unshift(this._parseTag(`</${this.vtn}>`));
+                html.unshift(virtualTag);
+                html.unshift(this._parseTag(`</${this.vtn}>`));
 
                 if ((!parent || parent.indexOf(this.vtn) === -1)) {
-                    xmlTree = this._convertTagsArrayToTree(xml);
+                    htmlTree = this._convertTagsArrayToTree(html);
                 }
             }
-            return xmlTree;
+            return htmlTree;
         }
 
-        xmlTree.push(tag);
+        htmlTree.push(tag);
         if (tag.name.indexOf(this.vtn) === -1)
-            tag.children = this._convertTagsArrayToTree(xml, tag.name);
-        xmlTree = xmlTree.concat(this._convertTagsArrayToTree(xml));
+            tag.children = this._convertTagsArrayToTree(html, tag.name);
+        htmlTree = htmlTree.concat(this._convertTagsArrayToTree(html));
 
-        return xmlTree;
+        return htmlTree;
     }
 
-    _toString(xml) {
-        var xmlText = this._convertTagToText(xml);
+    _toString(html) {
+        var htmlText = this._convertTagToText(html);
 
-        if (xml.children && xml.children.length > 0) {
-            xml.children.map(child => {
-                xmlText += this._toString(child);
+        if (html.children && html.children.length > 0) {
+            html.children.map(child => {
+                htmlText += this._toString(child);
             });
 
-            xmlText += '</' + xml.name + '>';
+            htmlText += '</' + html.name + '>';
         }
 
-        return xmlText;
+        return htmlText;
     }
 
     _convertTagToText(tag) {
@@ -178,11 +178,11 @@ module.exports = class {
         return tagText;
     }
 
-    parseFromString(xmlText) {
-        return this._parseFromString(xmlText);
+    parseFromString(htmlText) {
+        return this._parseFromString(htmlText);
     }
 
-    toString(xml) {
-        return this._toString(xml);
+    toString(html) {
+        return this._toString(html);
     }
 };

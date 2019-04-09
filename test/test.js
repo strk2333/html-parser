@@ -1,16 +1,16 @@
-const XMLParser = require('../xmlParser')
+const HTMLParser = require('../htmlParser')
 const indexRes = require('./indexSrc')
 const customRes = require('./customSrc')
 
 
-const parser = new XMLParser()
-const xml = parser.parseFromString(customRes)
-const arr = xml.getElementsByTagName('div')
+const parser = new HTMLParser()
+const html = parser.parseFromString(customRes)
+const arr = html.getElementsByTagName('div')
 const arr2 = arr.filter((it) => {
     return it.attributes && it.attributes.class && it.attributes.class.indexOf('content') !== -1
 })
 
-console.log(parser.toString(xml))
+console.log(parser.toString(html))
 // console.log(arr)
 // console.log(arr2)
 // console.log(arr[0])
