@@ -1,5 +1,3 @@
-const debugMode = false
-
 const uuid = require('uuid/v1')
 
 module.exports = class {
@@ -26,10 +24,8 @@ module.exports = class {
                 return;
             }
             
-            if (debugMode) {
-                console.log(`element: ${element}`)
-            }
-
+            // console.log(`element: ${element}`)
+            
             if (!element || element.indexOf('?xml') > -1) {
                 return;
             }
