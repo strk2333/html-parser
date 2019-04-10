@@ -1,6 +1,7 @@
 const HTMLParser = require('../htmlParser')
-const indexRes = require('./indexSrc')
-const customRes = require('./customSrc')
+const indexRes = require('./data/indexSrc')
+const lrcRes = require('./data/lrcSrc')
+const customRes = require('./data/customSrc')
 
 
 const parser = new HTMLParser()
@@ -10,7 +11,20 @@ const arr2 = arr.filter((it) => {
     return it.attributes && it.attributes.class && it.attributes.class.indexOf('content') !== -1
 })
 
-console.log(parser.toString(html))
+var expect = require('chai').expect;
+
+describe('test01', function () {
+
+    describe('#run', function () {
+        it('seconds', function () {
+            expect(html.length).to.not.eq(0);
+        })
+    });
+
+});
+
+
+// console.log(parser.toString(html))
 // console.log(arr)
 // console.log(arr2)
 // console.log(arr[0])

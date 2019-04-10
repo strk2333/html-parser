@@ -11,7 +11,7 @@ loaders.push({
 
 module.exports = {
     entry: [
-      './xmlParser.js' // your app's entry point
+      './htmlParser.js' // your app's entry point
     ],
     devtool: process.env.WEBPACK_DEVTOOL || 'eval-source-map',
     output: {

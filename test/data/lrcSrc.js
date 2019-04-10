@@ -267,4 +267,4 @@ Released   : 20090927
 </html>
 `
 
-export default lrcSrc
+module.exports = lrcSrc
