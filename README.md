@@ -13,7 +13,7 @@ $ npm install react-html-plain-parser
 2. [fixed] br tag: use uuid replace br
 
 
-## react-xml-parser
+## Based on react-xml-parser
 https://github.com/matanshiloah/xml-parser/
 
 ## License
