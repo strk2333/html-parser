@@ -15,3 +15,6 @@ $ npm install react-html-plain-parser
 
 ## Origin README
 see https://github.com/matanshiloah/xml-parser/blob/master/README.md
+
+## License
+ISC
