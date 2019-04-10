@@ -5,7 +5,7 @@ Base on react-xml-parser which used for xml parser. Aiming to parse HTML, handli
 
 # Installation
 ```
-$ npm install react-xml-parser
+$ npm install react-html-plain-parser
 ```
 
 # Problems
