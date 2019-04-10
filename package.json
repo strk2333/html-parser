@@ -13,16 +13,16 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strk2333/html-parser.git"
+    "url": "git+https://github.com/strk2333/html-plain-parser.git"
   },
   "keywords": [
     "HTML",
     "react"
   ],
   "bugs": {
-    "url": "https://github.com/strk2333/html-parser/issues"
+    "url": "https://github.com/strk2333/html-plain-parser/issues"
   },
-  "homepage": "https://github.com/strk2333/html-parser#readme",
+  "homepage": "https://github.com/strk2333/html-plain-parser#readme",
   "dependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
