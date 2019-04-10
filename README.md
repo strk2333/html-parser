@@ -1,7 +1,7 @@
 ### Obviously there are too many great solutions but not this.
 
 # react-html-plain-parser
-Base on react-xml-parser which used for xml parser. Aiming to parse HTML, handling problems like br tag etc.
+Based on react-xml-parser which used for xml parser. Aiming to parse HTML, handling problems like br tag etc.
 
 ## Installation
 ```
