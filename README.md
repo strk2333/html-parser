@@ -9,7 +9,7 @@ $ npm install react-html-plain-parser
 ```
 
 ## Update
-- v1.0.1.1 add html text beautify
+- v1.0.2 add html text beautify
 
 ## Problems
 1. [fixed] can't show some value in a closed tag, ex. `<p><div>1<p>2</p>3</div>4<p>` can't show 3,4: add virtual tag
