@@ -17,9 +17,9 @@ const arr = rootNode.getElementsByTagName('div') // get all div tags, find from 
 ```
 
 ### Selector
-FilterType: TAG, ATTR, CLASS, ID, VALUE
-FilterOpt: INCLUDE, EQUAL, START_WITH, END_WITH, NOT_INCLUDE, NOT_EQUAL, NOT_START_WITH, NOT_END_WITH
-OutputType: NODE, TAG, ATTR, VALUE, CHILDREN
+- FilterType: TAG, ATTR, CLASS, ID, VALUE
+- FilterOpt: INCLUDE, EQUAL, START_WITH, END_WITH, NOT_INCLUDE, NOT_EQUAL, NOT_START_WITH, NOT_END_WITH
+- OutputType: NODE, TAG, ATTR, VALUE, CHILDREN
 ```
 const {select, filterConfig, outputConfig} = parser
 const {FilterType, FilterOpt, OutputType} = HTMLParser
