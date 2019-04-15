@@ -1,19 +1,45 @@
 ### Obviously there are too many great solutions but not this.
 
 # react-html-plain-parser
-Based on react-xml-parser which used for xml parser. Aiming to parse HTML, handling problems like br tag etc.
+Based on react-xml-parser which used for xml parser. Aiming to parse HTML using regex, offer some convinent functions with no mercy on effeciency.
 
 ## Installation
 ```
 $ npm install react-html-plain-parser
 ```
 
+## Usage
+```
+const htmlString = `<div>2333</div>`
+const parser = new HTMLParser()
+const rootNode = parser.parseFromString(htmlString) // get root node from plain html
+const arr = rootNode.getElementsByTagName('div') // get all div tags, find from rootNode 
+```
+
+### Selector
+FilterType: TAG, ATTR, CLASS, ID, VALUE
+FilterOpt: INCLUDE, EQUAL, START_WITH, END_WITH, NOT_INCLUDE, NOT_EQUAL, NOT_START_WITH, NOT_END_WITH
+OutputType: NODE, TAG, ATTR, VALUE, CHILDREN
+```
+const {select, filterConfig, outputConfig} = parser
+const {FilterType, FilterOpt, OutputType} = HTMLParser
+const configs = [
+    _filterConfig(FilterType.TAG, FilterOpt.START_WITH, 'd'),
+    _filterConfig(FilterType.ATTR, FilterOpt.NOT_EQUAL, ['display', 'none']),
+    _filterConfig(FilterType.CLASS, FilterOpt.END_WITH, 't'),
+    filterConfig(FilterType.ID, FilterOpt.INCLUDE, 'not')
+]
+const output = outputConfig(OutputType.TAG)
+const res = select(html, configs, output)
+
+const config = filterConfig(FilterType.TAG, FilterOpt.EQUAL, 'a')
+const res2 = select(html, config, outputConfig(OutputType.ATTR, 'href'))
+```
+
 ## Update
+- v1.0.3 the biggest update ever, offer *selector* with terrible effeciency.
 - v1.0.2 add html text beautify
 
-## Problems
-1. [fixed] can't show some value in a closed tag, ex. `<p><div>1<p>2</p>3</div>4<p>` can't show 3,4: add virtual tag
-2. [fixed] br tag: use uuid replace br
 
 ## Based on react-xml-parser
 https://github.com/matanshiloah/xml-parser/

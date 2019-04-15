@@ -1,7 +1,32 @@
 const uuid = require('uuid/v1')
 const br = '<br \/>|<br\/>|<br>|<br >'
+const FilterType = {
+  TAG: 1,
+  ATTR: 3,
+  CLASS: 4,
+  ID: 5,
+  VALUE: 6,
+}
+const FilterOpt = {
+  INCLUDE: 1,
+  EQUAL: 2,
+  START_WITH: 3,
+  END_WITH: 4,
 
-module.exports = class {
+  NOT_INCLUDE: 11,
+  NOT_EQUAL: 12,
+  NOT_START_WITH: 13,
+  NOT_END_WITH: 14,
+}
+const OutputType = {
+  NODE: 1, // default
+  TAG: 2,
+  ATTR: 3,
+  VALUE: 4,
+  CHILDREN: 5,
+}
+
+class HTMLParser {
 
   constructor() {
     this.brid = uuid() // br tag repalced as brid
@@ -24,8 +49,6 @@ module.exports = class {
       if (element === '') {
         return
       }
-
-      // console.log(`element: ${element}`)
 
       if (!element || element.indexOf('?html') > -1) {
         return
@@ -199,4 +222,214 @@ module.exports = class {
   textBeautify(htmlText) {
     return this._textBeautify(htmlText)
   }
+
+  // html selector
+  _select(nodes, configs, output) {
+    let res = []
+    let filterNodes = nodes
+    for (let config of configs) {
+      res = []
+      if (!Array.isArray(filterNodes)) {
+        res = res.concat(this._filter(nodes, config))
+      } else {
+        for (let filterNode of filterNodes) {
+          res = res.concat(this._filter(filterNode, config))
+        }
+      }
+      filterNodes = res
+    }
+
+    return this._output(res, output)
+  }
+
+
+  _filterConfig(type, opt, params) {
+    if (type && opt && params)
+      if (Array.isArray(params))
+        return { type, opt, params }
+      else
+        return { type, opt, params: [params]}
+    return 
+  }
+
+  _filterOutput(type, param) {
+    if (type)
+      return {type, param}
+    return 
+  }
+
+   /**
+    * HTML node filter
+    * 
+    * @param {array} filterConfig filter configs
+    * @usage
+    * Ex. [
+    *   {type: FilterType.TAG, opt: FilterOpt.START_WITH, params: ['a']},
+    *   {type: FilterType.ATTR, opt: Filtert.INCLUDE, params: ['href', 'aaa', 'bbb']},
+    *   {type: FilterType.CLASS, opt: FilterOpt.START_WITH, params: ['a', 'b']},
+    * ]
+    */
+  _filter(node, config, output) {
+    if (!config)
+      return
+
+    let res = []
+    switch (config.type) {
+      case FilterType.TAG:
+        res = this._filterTag(node, config.opt, config.params)
+        break
+      case FilterType.ATTR:
+        const [attrName, ...attrValues] = config.params
+        res = this._filterAttr(node, config.opt, attrName, attrValues)
+        break
+      case FilterType.CLASS:
+        res = this._filterClass(node, config.opt, config.params)
+        break
+      case FilterType.ID:
+        res = this._filterId(node, config.opt, config.params)
+        break
+      case FilterType.VALUE:
+        res = this._filterValue(node, config.opt, config.params)
+        break
+    }
+    return res
+  }
+
+  _output(src, output) {
+    let outputRes = src
+
+    if (!output) 
+      return outputRes
+
+    switch (output.type) {
+      case OutputType.TAG:
+        outputRes = src.map(it => it.name)
+        break
+      case OutputType.ATTR:
+        outputRes = src.map(it => {
+            return it.attributes[output.param]
+        })
+        break
+      case OutputType.VALUE:
+        outputRes = src.map(it => it.value)
+        break
+      case OutputType.CHILDREN:
+        outputRes = src.map(it => it.children)
+        break
+      default:
+        // node
+        break
+    } 
+    return outputRes
+  }
+
+  _filterTag(node, opt, params) {
+    var matches = []
+    const findCallback = this._getCallBack(opt, node.name.toLowerCase())
+    if (params.find(findCallback))
+      matches.push(node)
+
+    node.children.map(child => {
+      matches = matches.concat(this._filterTag(child, opt, params))
+    })
+
+    return matches
+  }
+
+  _filterAttr(node, opt, attrName, attrValues) {
+    var matches = []
+    const source = node.attributes[attrName]
+    if (source) {
+      // split attribute values like 'class1 class2' to ['class1', 'class2']
+      const values = source.split(' ')
+      for (let value of values) {
+        let findCallback = this._getCallBack(opt, value)
+        if (attrValues.find(findCallback)) {
+          matches.push(node)
+          break
+        }
+      }
+    }
+
+    node.children.map(child => {
+      matches = matches.concat(this._filterAttr(child, opt, attrName, attrValues))
+    })
+    return matches
+  }
+
+  _filterClass(node, opt, params) {
+    return this._filterAttr(node, opt, 'class', params)
+  }
+
+  _filterId(node, opt, params) {
+    return this._filterAttr(node, opt, 'id', params)
+  }
+
+  _filterValue(node, opt, params) {
+    var matches = []
+    const findCallback = this._getCallBack(opt, node.value)
+
+    if (params.find(findCallback))
+      matches.push(node)
+
+    node.children.map(child => {
+      matches = matches.concat(this._filterValue(node, opt, params))
+    })
+
+    return matches
+  }
+
+  _getCallBack(opt, source) {
+    let callBack = it => false
+    const src = source.toLowerCase()
+    switch (opt) {
+      case FilterOpt.INCLUDE:
+        callBack = it => src.includes(it.toLowerCase())
+        break
+      case FilterOpt.EQUAL:
+        callBack = it => src === it.toLowerCase()
+        break
+      case FilterOpt.START_WITH:
+        callBack = it => src.indexOf(it.toLowerCase()) === 0
+        break
+      case FilterOpt.END_WITH:
+        callBack = it => src.lastIndexOf(it.toLowerCase()) === src.length - it.length
+        break
+      case FilterOpt.NOT_INCLUDE:
+        callBack = it => !src.includes(it.toLowerCase())
+        break
+      case FilterOpt.NOT_EQUAL:
+        callBack = it => src !== it.toLowerCase()
+        break
+      case FilterOpt.NOT_START_WITH:
+        callBack = it => src.indexOf(it.toLowerCase()) !== 0
+        break
+      case FilterOpt.NOT_END_WITH:
+        callBack = it => src.lastIndexOf(it.toLowerCase()) !== src.length - it.length
+        break
+    }
+    return callBack
+  }
+
+  // _hasChildren() {
+
+  // }
+
+  select(nodes, configs, output) {
+    return this._select(nodes, configs, output)
+  }
+
+  filterConfig (type, opt, params) {
+    this._filterConfig(type, opt, params)
+  }
+
+  outputConfig(type, param) {
+    this._filterOutput(type, param)
+  }
 }
+
+HTMLParser.FilterType = FilterType
+HTMLParser.FilterOpt = FilterOpt
+HTMLParser.OutputType = OutputType
+
+module.exports = HTMLParser
