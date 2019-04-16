@@ -10,7 +10,7 @@ $ npm install react-html-plain-parser
 
 ## Usage
 ```
-// const parser = require('../htmlParser')
+// const parser = require('react-html-plain-parser')
 import parser from 'react-html-plain-parser'
 
 const htmlString = `<div>2333</div>`
