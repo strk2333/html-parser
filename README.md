@@ -42,10 +42,10 @@ const res2 = select(html, config, outputConfig(OutputType.ATTR, 'href'))
 ```
 
 ## Update
-- v1.0.6 bind this, fix NOT selector incorrect result, clean dependencies, make more bugs.
-- v1.0.5 read enum fixing ('this' bug, unable to run)
-- v1.0.4 - (enum bug, unable to run)
-- v1.0.3 the biggest update ever, offer *selector* with terrible effeciency. (enum bug, unable to run)
+- v1.0.6 fix config return, bind this, fix NOT selector incorrect result, clean dependencies, make more bugs.
+- v1.0.5 read enum fixing (deadly bugs, unable to run)
+- v1.0.4 - (deadly bugs, unable to run)
+- v1.0.3 the biggest update ever, offer *selector* with terrible effeciency. (deadly bugs, unable to run)
 - v1.0.2 add html text beautify
 
 
