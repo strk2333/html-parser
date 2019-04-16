@@ -1,12 +1,11 @@
 const fetch = require('node-fetch')
 
-const HTMLParser = require('../htmlParser')
+const parser = require('../htmlParser')
 const indexRes = require('./data/indexSrc')
 const lrcRes = require('./data/lrcSrc')
 const customRes = require('./data/customSrc')
 
 
-const parser = new HTMLParser()
 const html = parser.parseFromString(lrcRes)
 const arr = html.getElementsByTagName('a')
 const arr2 = arr.filter((it) => {
@@ -29,8 +28,9 @@ const arr2 = arr.filter((it) => {
 // console.log(parser.textBeautify(parser.toString(arr2[0])))
 // console.log(arr)
 // console.log(arr[0])
+
 const {filterConfig, outputConfig, boo} = parser
-const {FilterType, FilterOpt, OutputType} = HTMLParser
+const {FilterType, FilterOpt, OutputType} = parser
 const configs = [
     parser.filterConfig(FilterType.TAG, FilterOpt.EQUAL, 'a'),
     parser.filterConfig(FilterType.ATTR, FilterOpt.NOT_START_WITH, ['href', 'http']),

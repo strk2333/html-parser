@@ -10,6 +10,9 @@ $ npm install react-html-plain-parser
 
 ## Usage
 ```
+// const parser = require('../htmlParser')
+import parser from 'react-html-plain-parser'
+
 const htmlString = `<div>2333</div>`
 const parser = new HTMLParser()
 const rootNode = parser.parseFromString(htmlString) // get root node from plain html
@@ -21,8 +24,7 @@ const arr = rootNode.getElementsByTagName('div') // get all div tags, find from 
 - FilterOpt: INCLUDE, EQUAL, START_WITH, END_WITH, NOT_INCLUDE, NOT_EQUAL, NOT_START_WITH, NOT_END_WITH
 - OutputType: NODE, TAG, ATTR, VALUE, CHILDREN
 ```
-const {select, filterConfig, outputConfig} = parser
-const {FilterType, FilterOpt, OutputType} = HTMLParser
+const {FilterType, FilterOpt, OutputType, filterConfig, outputConfig, select} = parser
 const configs = [
     _filterConfig(FilterType.TAG, FilterOpt.START_WITH, 'd'),
     _filterConfig(FilterType.ATTR, FilterOpt.NOT_EQUAL, ['display', 'none']),
@@ -37,6 +39,7 @@ const res2 = select(html, config, outputConfig(OutputType.ATTR, 'href'))
 ```
 
 ## Update
+- v1.0.4 read enum fixing
 - v1.0.3 the biggest update ever, offer *selector* with terrible effeciency.
 - v1.0.2 add html text beautify
 

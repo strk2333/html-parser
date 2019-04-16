@@ -29,15 +29,19 @@ const OutputType = {
 class HTMLParser {
 
   constructor() {
-    this.brid = uuid() // br tag repalced as brid
-    this.vtn = uuid() // virtual tag name
+    this.FilterType = FilterType
+    this.FilterOpt = FilterOpt
+    this.OutputType = OutputType
+
+    this._brid = uuid() // br tag repalced as brid
+    this._vtn = uuid() // virtual tag name
   }
 
   _parseFromString(htmlText) {
     var cleanhtmlText = htmlText
       .replace(/\s{2,}/g, ' ')
       .replace(/\t|\n|\r/g, '')
-      .replace(RegExp(br, 'g'), this.brid)
+      .replace(RegExp(br, 'g'), this._brid)
       .replace(/>/g, '>\n')
       .replace(/</g, '\n<')
 
@@ -134,7 +138,7 @@ class HTMLParser {
     }
 
     var tag = html.shift()
-    tag.value = tag.value.replace(RegExp(this.brid, 'g'), '<br />')
+    tag.value = tag.value.replace(RegExp(this._brid, 'g'), '<br />')
 
     if ((tag.value.indexOf('</') > -1 || tag.name.match(/\/$/))) {
       tag.name = tag.name.replace(/\/$/, '').trim()
@@ -147,12 +151,12 @@ class HTMLParser {
 
     if (tag.name.indexOf('/') == 0) {
       if (tag.value !== '') {
-        const virtualTag = this._parseTag(`<${this.vtn}>`)
+        const virtualTag = this._parseTag(`<${this._vtn}>`)
         virtualTag.value = tag.value
         html.unshift(virtualTag)
-        html.unshift(this._parseTag(`</${this.vtn}>`))
+        html.unshift(this._parseTag(`</${this._vtn}>`))
 
-        if ((!parent || parent.indexOf(this.vtn) === -1)) {
+        if ((!parent || parent.indexOf(this._vtn) === -1)) {
           htmlTree = this._convertTagsArrayToTree(html)
         }
       }
@@ -160,7 +164,7 @@ class HTMLParser {
     }
 
     htmlTree.push(tag)
-    if (tag.name.indexOf(this.vtn) === -1)
+    if (tag.name.indexOf(this._vtn) === -1)
       tag.children = this._convertTagsArrayToTree(html, tag.name)
     htmlTree = htmlTree.concat(this._convertTagsArrayToTree(html))
 
@@ -182,7 +186,7 @@ class HTMLParser {
   }
 
   _convertTagToText(tag) {
-    if (tag.name.indexOf(this.vtn) > -1)
+    if (tag.name.indexOf(this._vtn) > -1)
       return tag.value
 
     var tagText = '<' + tag.name
@@ -428,8 +432,4 @@ class HTMLParser {
   }
 }
 
-HTMLParser.FilterType = FilterType
-HTMLParser.FilterOpt = FilterOpt
-HTMLParser.OutputType = OutputType
-
-module.exports = HTMLParser
+module.exports = new HTMLParser()
