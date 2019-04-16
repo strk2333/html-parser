@@ -1,6 +1,6 @@
 {
   "name": "react-html-plain-parser",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Based on react-xml-parser which used for xml parser. Aiming to parse HTML using regex, offer some convinent functions with no mercy on effeciency.",
   "main": "htmlParser.js",
   "scripts": {
