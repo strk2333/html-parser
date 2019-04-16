@@ -26,9 +26,9 @@ const arr = rootNode.getElementsByTagName('div') // get all div tags, find from 
 ```
 const {FilterType, FilterOpt, OutputType, filterConfig, outputConfig, select} = parser
 const configs = [
-    _filterConfig(FilterType.TAG, FilterOpt.START_WITH, 'd'),
-    _filterConfig(FilterType.ATTR, FilterOpt.NOT_EQUAL, ['display', 'none']),
-    _filterConfig(FilterType.CLASS, FilterOpt.END_WITH, 't'),
+    filterConfig(FilterType.TAG, FilterOpt.START_WITH, 'd'),
+    filterConfig(FilterType.ATTR, FilterOpt.NOT_EQUAL, ['display', 'none']),
+    filterConfig(FilterType.CLASS, FilterOpt.END_WITH, 't'),
     filterConfig(FilterType.ID, FilterOpt.INCLUDE, 'not')
 ]
 const output = outputConfig(OutputType.TAG)
