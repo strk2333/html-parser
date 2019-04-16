@@ -40,7 +40,7 @@ const res2 = select(html, config, outputConfig(OutputType.ATTR, 'href'))
 
 ## Update
 - v1.0.4 read enum fixing
-- v1.0.3 the biggest update ever, offer *selector* with terrible effeciency.
+- v1.0.3 the biggest update ever, offer *selector* with terrible effeciency. (enum bug, unable to run)
 - v1.0.2 add html text beautify
 
 
