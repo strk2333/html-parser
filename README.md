@@ -18,6 +18,8 @@ const htmlString = `<div>2333</div>`
 const parser = new HTMLParser()
 const rootNode = parser.parseFromString(htmlString) // get root node from plain html
 const arr = rootNode.getElementsByTagName('div') // get all div tags, find from rootNode 
+
+const beautifiedText = parser.textBeautify(parser.toString(arr[0]))
 ```
 
 ### Selector
