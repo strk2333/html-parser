@@ -9,6 +9,7 @@ $ npm install react-html-plain-parser
 ```
 
 ## Usage
+### Basic
 ```
 // const parser = require('react-html-plain-parser')
 import parser from 'react-html-plain-parser'
