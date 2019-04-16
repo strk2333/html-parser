@@ -13,10 +13,10 @@ const FilterOpt = {
   START_WITH: 3,
   END_WITH: 4,
 
-  NOT_INCLUDE: 11,
-  NOT_EQUAL: 12,
-  NOT_START_WITH: 13,
-  NOT_END_WITH: 14,
+  NOT_INCLUDE: 101,
+  NOT_EQUAL: 102,
+  NOT_START_WITH: 103,
+  NOT_END_WITH: 104,
 }
 const OutputType = {
   NODE: 1, // default
@@ -38,10 +38,6 @@ class HTMLParser {
 
     this._bind()
   }
-
-  boo1() {return this.boo2()}
-
-  boo2() {return '222'}
 
   _parseFromString(htmlText) {
     var cleanhtmlText = htmlText
@@ -268,27 +264,27 @@ class HTMLParser {
       if (Array.isArray(params))
         return { type, opt, params }
       else
-        return { type, opt, params: [params]}
-    return 
+        return { type, opt, params: [params] }
+    return
   }
 
   _filterOutput(type, param) {
     if (type)
-      return {type, param}
-    return 
+      return { type, param }
+    return
   }
 
-   /**
-    * HTML node filter
-    * 
-    * @param {array} filterConfig filter configs
-    * @usage
-    * Ex. [
-    *   {type: FilterType.TAG, opt: FilterOpt.START_WITH, params: ['a']},
-    *   {type: FilterType.ATTR, opt: Filtert.INCLUDE, params: ['href', 'aaa', 'bbb']},
-    *   {type: FilterType.CLASS, opt: FilterOpt.START_WITH, params: ['a', 'b']},
-    * ]
-    */
+  /**
+   * HTML node filter
+   * 
+   * @param {array} filterConfig filter configs
+   * @usage
+   * Ex. [
+   *   {type: FilterType.TAG, opt: FilterOpt.START_WITH, params: ['a']},
+   *   {type: FilterType.ATTR, opt: Filtert.INCLUDE, params: ['href', 'aaa', 'bbb']},
+   *   {type: FilterType.CLASS, opt: FilterOpt.START_WITH, params: ['a', 'b']},
+   * ]
+   */
   _filter(node, config, output) {
     if (!config)
       return
@@ -318,7 +314,7 @@ class HTMLParser {
   _output(src, output) {
     let outputRes = src
 
-    if (!output) 
+    if (!output)
       return outputRes
 
     switch (output.type) {
@@ -327,7 +323,7 @@ class HTMLParser {
         break
       case OutputType.ATTR:
         outputRes = src.map(it => {
-            return it.attributes[output.param]
+          return it.attributes[output.param]
         })
         break
       case OutputType.VALUE:
@@ -339,7 +335,7 @@ class HTMLParser {
       default:
         // node
         break
-    } 
+    }
     return outputRes
   }
 
@@ -356,33 +352,30 @@ class HTMLParser {
     return matches
   }
 
-  _filterAttr(node, opt, attrName, attrValues) {
+  _filterAttr(node, opt, attrName, matchValues) {
     var matches = []
     const source = node.attributes[attrName]
     if (source) {
       // split attribute values like 'class1 class2' to ['class1', 'class2']
-      const values = source.split(' ')
+      const sources = source.split(' ')
       let pass = true
-      for (let value of values) {
-        let findCallback = this._getCallBack(opt, value)
-        if (opt > 10) { // not options
-          if (!attrValues.find(findCallback)) {
+      for (let source of sources) {
+        let findCallback = this._getCallBack(opt, source)
+        if (matchValues.find(findCallback)) {
+          if (opt > 100) { // not options
             pass = false
-            break
-          }
-        } else {
-          if (attrValues.find(findCallback)) {
+          } else {
             matches.push(node)
-            break
           }
+          break
         }
       }
-      if (opt > 10 && pass)
+      if (opt > 100 && pass)
         matches.push(node)
     }
 
     node.children.map(child => {
-      matches = matches.concat(this._filterAttr(child, opt, attrName, attrValues))
+      matches = matches.concat(this._filterAttr(child, opt, attrName, matchValues))
     })
     return matches
   }
@@ -414,28 +407,20 @@ class HTMLParser {
     const src = source.toLowerCase()
     switch (opt) {
       case FilterOpt.INCLUDE:
+      case FilterOpt.NOT_INCLUDE:
         callBack = it => src.includes(it.toLowerCase())
         break
       case FilterOpt.EQUAL:
+      case FilterOpt.NOT_EQUAL:
         callBack = it => src === it.toLowerCase()
         break
       case FilterOpt.START_WITH:
+      case FilterOpt.NOT_START_WITH:
         callBack = it => src.indexOf(it.toLowerCase()) === 0
         break
       case FilterOpt.END_WITH:
-        callBack = it => src.lastIndexOf(it.toLowerCase()) === src.length - it.length
-        break
-      case FilterOpt.NOT_INCLUDE:
-        callBack = it => !src.includes(it.toLowerCase())
-        break
-      case FilterOpt.NOT_EQUAL:
-        callBack = it => src !== it.toLowerCase()
-        break
-      case FilterOpt.NOT_START_WITH:
-        callBack = it => src.indexOf(it.toLowerCase()) !== 0
-        break
       case FilterOpt.NOT_END_WITH:
-        callBack = it => src.lastIndexOf(it.toLowerCase()) !== src.length - it.length
+        callBack = it => src.lastIndexOf(it.toLowerCase()) === src.length - it.length
         break
     }
     return callBack
@@ -449,7 +434,7 @@ class HTMLParser {
     return this._select(nodes, configs, output)
   }
 
-  filterConfig (type, opt, params) {
+  filterConfig(type, opt, params) {
     return this._filterConfig(type, opt, params)
   }
 

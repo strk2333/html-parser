@@ -42,6 +42,7 @@ const res2 = select(html, config, outputConfig(OutputType.ATTR, 'href'))
 ```
 
 ## Update
+- v1.0.7 fix NOT selector incorrect result
 - v1.0.6 fix config return, bind this, fix NOT selector incorrect result, clean dependencies, make more bugs.
 - v1.0.5 read enum fixing (deadly bugs, unable to run)
 - v1.0.4 - (deadly bugs, unable to run)
