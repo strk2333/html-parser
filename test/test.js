@@ -6,11 +6,15 @@ const lrcRes = require('./data/lrcSrc')
 const customRes = require('./data/customSrc')
 
 
-const html = parser.parseFromString(lrcRes)
-const arr = html.getElementsByTagName('a')
-const arr2 = arr.filter((it) => {
-    return it.attributes && it.attributes.class && it.attributes.class.indexOf('content') !== -1
-})
+// const html = parser.parseFromString(lrcRes)
+// const arr = html.getElementsByTagName('div')
+// const arr2 = arr.filter((it) => {
+//     return it.attributes && it.attributes.class && it.attributes.class.indexOf('content') !== -1
+// })
+
+// console.log(parser.textBeautify(parser.toString(arr2[0])))
+// console.log(arr)
+// console.log(arr[0])
 
 // const fetchRes = fetch('http://stage48.net/studio48/singles_nogizaka46.html')
 // .then(res => res.text())
@@ -24,22 +28,16 @@ const arr2 = arr.filter((it) => {
 // })
 // .catch(res => console.log(res))
 
-
-// console.log(parser.textBeautify(parser.toString(arr2[0])))
-// console.log(arr)
-// console.log(arr[0])
-
-const {filterConfig, outputConfig, boo} = parser
-const {FilterType, FilterOpt, OutputType} = parser
+const {filterConfig, outputConfig, boo1} = parser
+const {FilterType, FilterOpt, OutputType, select} = parser
 const configs = [
-    parser.filterConfig(FilterType.TAG, FilterOpt.EQUAL, 'a'),
-    parser.filterConfig(FilterType.ATTR, FilterOpt.NOT_START_WITH, ['href', 'http']),
+    filterConfig(FilterType.TAG, FilterOpt.EQUAL, 'a'),
+    filterConfig(FilterType.ATTR, FilterOpt.NOT_START_WITH, ['href', 'http']),
     // parser.filterConfig(FilterType.CLASS, FilterOpt.END_WITH, 't'),
     // parser.filterConfig(FilterType.ID, FilterOpt.EQUAL, 'page')
 ]
-const config = parser.filterConfig(FilterType.TAG, FilterOpt.EQUAL, 'a')
-const res = parser.select(html, configs, parser.outputConfig(OutputType.TAG))
-// console.log('0:' + arr.length)
+const config = filterConfig(FilterType.TAG, FilterOpt.EQUAL, 'a')
+const res = select(html, configs, outputConfig(OutputType.TAG))
 // console.log('0:' + res)
 
 // for (i of arr) {

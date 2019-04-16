@@ -35,7 +35,13 @@ class HTMLParser {
 
     this._brid = uuid() // br tag repalced as brid
     this._vtn = uuid() // virtual tag name
+
+    this._bind()
   }
+
+  boo1() {return this.boo2()}
+
+  boo2() {return '222'}
 
   _parseFromString(htmlText) {
     var cleanhtmlText = htmlText
@@ -186,7 +192,7 @@ class HTMLParser {
   }
 
   _convertTagToText(tag) {
-    if (tag.name.indexOf(this._vtn) > -1)
+    if (tag && tag.name.indexOf(this._vtn) > -1)
       return tag.value
 
     var tagText = '<' + tag.name
@@ -212,6 +218,16 @@ class HTMLParser {
 
   toString(html) {
     return this._toString(html)
+  }
+
+  //bind this
+  _bind() {
+    this.parseFromString = this.parseFromString.bind(this)
+    this.toString = this.toString.bind(this)
+    this.textBeautify = this.textBeautify.bind(this)
+    this.filterConfig = this.filterConfig.bind(this)
+    this.outputConfig = this.outputConfig.bind(this)
+    this.select = this.select.bind(this)
   }
 
   // 
@@ -346,13 +362,23 @@ class HTMLParser {
     if (source) {
       // split attribute values like 'class1 class2' to ['class1', 'class2']
       const values = source.split(' ')
+      let pass = true
       for (let value of values) {
         let findCallback = this._getCallBack(opt, value)
-        if (attrValues.find(findCallback)) {
-          matches.push(node)
-          break
+        if (opt > 10) { // not options
+          if (!attrValues.find(findCallback)) {
+            pass = false
+            break
+          }
+        } else {
+          if (attrValues.find(findCallback)) {
+            matches.push(node)
+            break
+          }
         }
       }
+      if (opt > 10 && pass)
+        matches.push(node)
     }
 
     node.children.map(child => {
@@ -424,12 +450,13 @@ class HTMLParser {
   }
 
   filterConfig (type, opt, params) {
-    this._filterConfig(type, opt, params)
+    return this._filterConfig(type, opt, params)
   }
 
   outputConfig(type, param) {
-    this._filterOutput(type, param)
+    return this._filterOutput(type, param)
   }
 }
+
 
 module.exports = new HTMLParser()
